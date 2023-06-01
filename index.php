@@ -85,7 +85,7 @@
             $operador = $string[$i];
             $numero = '';
 
-            while ($i+1 < strlen($string) && !in_array($string[$i + 1], $operadores)) {
+            while ($i < strlen($string) && !in_array($string[$i + 1], $operadores)) {
                 $numero .= $string[$i + 1];
                 $i++;
             }
@@ -111,12 +111,7 @@
             $i++;
         }
 
-        echo $resultado;
-        /*        
-
-        print_r($datos);
-        print_r(implode($_SESSION['valores']));
-        print_r($operacion); */
+        
     }
 
 
@@ -139,9 +134,48 @@
         <button type="submit" name="numero" value="/">/</button>
     </form>
     <?php
-
+        echo $resultado;
 
     ?>
 </body>
 
 </html>
+
+<!-- Posible solucion -->
+
+
+<!-- <?php
+    
+    $cad = '22-15+2+2/2*5';
+    $op = ['+','-','*','/'];
+    
+    
+    
+    $pattern = '/[' . preg_quote('+-*/', '/') . ']/';
+    $splt=  preg_split($pattern, $cad, -1, PREG_SPLIT_NO_EMPTY);
+    $op = preg_split('/[0-9]+/', $cad, -1, PREG_SPLIT_NO_EMPTY);
+    $result = preg_split($pattern, $cad);
+    
+    $res_op = (float) $result[0];
+    
+    for($i = 0; $i<count($op); $i++ ){
+
+        $res_op = match($op[$i]){
+            '+' => $res_op += $result[$i + 1],
+            '-' => $res_op -= $result[$i + 1],
+            '*' => $res_op *= $result[$i + 1],
+            '/' => $res_op /= $result[$i + 1],
+            default => null,
+        };
+    };
+    
+    print_r($res_op);
+ 
+   
+    
+?> -->
+
+
+
+
+
