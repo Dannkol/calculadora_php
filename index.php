@@ -18,15 +18,24 @@
         $inputString = $string;
 
         // Formar un array de números
-        $numbers = preg_split('/\+|\-|\×|\÷/', $inputString);
+        $numbers = preg_split('/\+|\-|\×|\÷|\^/', $inputString);
 
         // Formar un array de operadores
         $operators = preg_split('/[0-9]|\./', $inputString, -1, PREG_SPLIT_NO_EMPTY);
 
+        // Realizar las potencias 
+        $potentially = array_search('^', $operators);
+        while ($potentially !== false) {
+            $numbers[$potentially] = pow($numbers[$potentially], $numbers[$potentially + 1]);
+            array_splice($numbers, $potentially + 1, 1);
+            array_splice($operators, $potentially, 1);
+            $potentially = array_search('^', $operators);
+        }
+
         // Realizar las divisiones
         $divide = array_search('÷', $operators);
         while ($divide !== false) {
-            $numbers[$divide] = $numbers[$divide + 1] == '0' ? 0: $numbers[$divide] / $numbers[$divide + 1];
+            $numbers[$divide] = $numbers[$divide + 1] == '0' ? 0 : $numbers[$divide] / $numbers[$divide + 1];
             array_splice($numbers, $divide + 1, 1);
             array_splice($operators, $divide, 1);
             $divide = array_search('÷', $operators);
@@ -40,8 +49,6 @@
             array_splice($operators, $multiply, 1);
             $multiply = array_search('×', $operators);
         }
-
-
 
 
         // Realizar las sumas y restas
@@ -78,7 +85,7 @@
                 $_SESSION['numeros'] = [];
             } else if ($numero == 'resultado') {
                 $resultado = calcular();
-            } else if($numero == 'delate'){
+            } else if ($numero == 'delate') {
                 array_pop($_SESSION['numeros']);
             } else {
                 array_push($_SESSION['numeros'], $numero);
@@ -91,11 +98,13 @@
         <div class="container">
             <div class="calc-body">
                 <div class="calc-screen">
-                    <div class="calc-operation"><?php echo implode($_SESSION['numeros'])?> </div>
-                    <div class="calc-typed"><?php print_r(round($resultado , 3 , PHP_ROUND_HALF_UP)); ?><span class="blink-me">_</span></div>
+                    <div class="calc-operation"><?php echo implode($_SESSION['numeros']) ?> </div>
+                    <div class="calc-typed"><?php print_r(round($resultado, 3, PHP_ROUND_HALF_UP)); ?><span class="blink-me">_</span></div>
                 </div>
                 <div class="calc-button-row">
-                    <div class="none"></div>
+                    <button type="submit" name="numero" value="^">
+                        <div class="button l">^</div>
+                    </button>
                     <button type="submit" name="numero" value="clear">
                         <div class="button c">C</div>
                     </button>
